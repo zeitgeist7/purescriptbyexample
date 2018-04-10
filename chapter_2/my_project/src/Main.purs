@@ -3,10 +3,14 @@ module Main where
   -- module My.First.Module where
 
 import Control.Monad.Eff.Console
-import Math(sqrt)
+import Math(sqrt, pi)
 import Prelude
 
 diagonal w h = sqrt(w*w + h*h)
+
+
+-- Solutions to exercises
+circleArea r = pi * r * r
 
 main = logShow (diagonal 3.0 4.0)
 
