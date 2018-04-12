@@ -97,3 +97,53 @@ Here is how to test:
 > book1 = insertEntry bonzy emptyBook
 > map showEntry $ findEntry "Bonzy" "Jhoomuck" book1
 -}
+
+{-
+Exercise 1: (Easy)
+Test your understanding of the findEntry function by writing down
+the types of each of its major subexpressions.
+For example, the type of the head function as used is specialized to
+AddressBook -> Maybe Entry.
+
+ANSWER:
+head :: AddressBook -> Maybe Entry
+filterEntry :: Entry -> Boolean
+filter filterEntry :: AddressBook -> AddressBook
+...anything else?
+
+-- Example to test it in the REPL
+ff = filter filterEntry -- filter filterEntry >>> head
+  where
+    filterEntry :: Entry -> Boolean
+    filterEntry entry =
+      entry.firstName == "firstName"
+      && entry.lastName == "lastName"
+-}
+
+{-
+Exercise 2
+Write a function which looks up an Entry
+given a street address,
+by reusing the existing code in findEntry.
+Test your function in PSCi
+
+ANSWER:
+-}
+entryFromStreetAddress :: String -> AddressBook -> Maybe Entry
+entryFromStreetAddress street =
+  head <<< filter filterUsingAddress
+    where
+      filterUsingAddress :: Entry ->Boolean
+      filterUsingAddress e = e.address.street == street
+
+{-
+Exercise 3
+ˆˆˆˆˆˆˆˆˆˆ
+
+-}
+
+{-
+Exercise 4
+ˆˆˆˆˆˆˆˆˆˆ
+
+-}
