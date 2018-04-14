@@ -2,7 +2,7 @@ module Data.AddressBook where
 
 import Prelude
 import Control.Plus (empty)
-import Data.List (List(..), filter, head)
+import Data.List (List(..), filter, head, null)
 import Data.Maybe (Maybe)
 
 {-
@@ -139,8 +139,22 @@ entryFromStreetAddress street =
 {-
 Exercise 3
 ˆˆˆˆˆˆˆˆˆˆ
-
+> address = { street: "straat", city:"Amsterdam", state: "1018GW" }
+> bonzy = { firstName: "Bonzy", lastName: "Jhoomuck", address: address } :: Entry
+> paro = { firstName: "Paro", lastName: "Jhoomuck", address: address } :: Entry
+> jmj = { firstName: "Vandhana", lastName: "Teeluckdharry", address: address } :: Entry
+> b1 = insertEntry bonzy emptyBook
+> b2 = insertEntry paro b1
+> b3 = insertEntry jmj b2
+ANSWER:
 -}
+contains :: String -> String -> AddressBook -> Boolean
+contains firstName lastName = not null <<< filter filterEntry
+  where
+      filterEntry :: Entry -> Boolean
+      filterEntry entry =
+        entry.firstName == firstName
+        && entry.lastName == lastName
 
 {-
 Exercise 4
