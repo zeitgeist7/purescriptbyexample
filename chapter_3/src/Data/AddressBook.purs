@@ -2,7 +2,7 @@ module Data.AddressBook where
 
 import Prelude
 import Control.Plus (empty)
-import Data.List (List(..), filter, head, null)
+import Data.List (List(..), filter, head, null, nubBy)
 import Data.Maybe (Maybe)
 
 {-
@@ -159,5 +159,12 @@ contains firstName lastName = not null <<< filter filterEntry
 {-
 Exercise 4
 ˆˆˆˆˆˆˆˆˆˆ
-
+ANSWER:
 -}
+removeDuplicates :: AddressBook -> AddressBook
+removeDuplicates = nubBy namePred
+  where
+    namePred :: Entry -> Entry -> Boolean
+    namePred e1 e2 =
+      e1.firstName == e2.firstName &&
+      e1.lastName == e2.lastName
