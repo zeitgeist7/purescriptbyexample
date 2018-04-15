@@ -12,3 +12,6 @@ allFiles' :: Path -> Array Path
 allFiles' file = file : do
   child <- ls file
   allFiles' child
+
+-- Author says that
+-- solutions to the exercises can be completed in this file

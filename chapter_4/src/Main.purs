@@ -5,7 +5,7 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
 import Data.Array (null)
-import Data.Array.Partial (tail)
+import Data.Array.Partial (tail, head)
 import Partial.Unsafe (unsafePartial)
 
 length1 :: forall a. Array a -> Int
@@ -14,11 +14,28 @@ length1 arr =
     then 0
     else 1 + length1 (unsafePartial tail arr)
 
+
+-- main :: forall e. Eff (console :: CONSOLE | e) Unit
+-- main = do
+--   log "Hello sailor!"
+
+
+{-
+List does not have a map function but can use the <$> infx operator
+For example : (\n -> n * 3) <$> 1..4
+-}
+
 isEven :: Int -> Boolean
 isEven 0 = true
 isEven 1 = false
 isEven n = isEven (n - 2)
 
-main :: forall e. Eff (console :: CONSOLE | e) Unit
-main = do
-  log "Hello sailor!"
+countEven :: Array Int -> Int
+countEven [] = 0
+countEven xs =
+  currentContribution (unsafePartial head xs)
+  + countEven (unsafePartial tail xs)
+    where
+    currentContribution :: Int -> Int
+    currentContribution x =
+      if isEven x then 1 else 0
