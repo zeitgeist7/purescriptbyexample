@@ -13,7 +13,9 @@
     "purescript-strings": "^3.5.0",
     "purescript-lists": "^4.12.0",
     "purescript-maybe": "^3.1.0",
-    "purescript-foldable-traversable": "^3.7.1"
+    "purescript-foldable-traversable": "^3.7.1",
+    "purescript-control": "^3.3.1",
+    "purescript-math": "^2.1.0"
   },
   "devDependencies": {
     "purescript-psci-support": "^3.0.0"
