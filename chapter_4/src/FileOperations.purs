@@ -2,8 +2,13 @@ module FileOperations where
 
 import Prelude
 
-import Data.Path (Path, ls)
-import Data.Array (concatMap, (:))
+import Data.Ord
+import Data.Maybe (Maybe(..))
+import Data.Path (Path, ls, isDirectory, size)
+import Data.Array (concatMap, (:), filter, foldr, foldl, head)
+
+import Data.Path
+import Control.MonadZero (guard)
 
 allFiles :: Path -> Array Path
 allFiles root = root : concatMap allFiles (ls root)
@@ -13,5 +18,41 @@ allFiles' file = file : do
   child <- ls file
   allFiles' child
 
--- Author says that
--- solutions to the exercises can be completed in this file
+-- 1.
+onlyFiles :: Path -> Array Path
+onlyFiles = allFiles >>> filter isFile where isFile = not isDirectory
+
+-- 2.
+-- Lenses would be helpful here for comparison but need to master that
+compare ::
+  (Maybe Int -> Maybe Int -> Boolean)
+  -> Path
+  -> Maybe Path
+  -> Maybe Path
+compare comparator f1 (Just f2) =
+  if comparator (size f1) (size f2)
+  then Just f1
+  else Just f2
+compare _ f1 Nothing = Just f1
+
+smaller = (compare (<))
+larger = (compare (>))
+
+smallest_largest_files :: Path -> Array (Maybe Path) -- Could have used a Tuple
+-- Add an auxilliary functie
+smallest_largest_files path = [
+  path # onlyFiles >>> foldr smaller Nothing,
+  path # onlyFiles >>> foldr larger Nothing
+  ]
+  -- '#' is like the pipe (|>)
+
+whereIs :: String -> Maybe Path
+whereIs fileToSearch = head $ do
+  path <- allFiles' root
+  child <- ls path
+  guard $ filename child == fileToSearch
+  [path]
+
+-- Had some trouble with this one.
+-- Credit:
+-- https://github.com/kvsm/purescript-by-example/blob/master/chapter4/src/FileOperations.purs
