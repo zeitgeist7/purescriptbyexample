@@ -9,7 +9,7 @@ import Control.MonadZero (guard)
 
 import Math((%))
 
-import Data.Foldable (product)
+import Data.Foldable (product, foldl, foldr)
 import Data.Array (null, filter, (..), length, (:))
 
 import Data.Array.Partial (tail, head)
@@ -137,3 +137,33 @@ use factors then on all the pairs,
  Might even need to consider kust [1,n]
 -}
 -- Will come back to that later with more maths knowledge
+
+
+-- Folds, Tail Recursion, Accumulators
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+
+-- 1.
+truthy :: Array Boolean -> Boolean
+truthy = foldl (&&) true  -- foldl (==) true
+
+-- 2. An array of Boolean that has AT LEAST ONE false value in it
+
+-- 3. Tail recursive form
+count :: forall a. (a -> Boolean) -> Array a -> Int
+count _ [] = 0
+count p xs = if p (unsafePartial head xs)
+                then count p (unsafePartial tail xs)  + 1
+                else count p (unsafePartial tail xs)
+
+count' :: forall a. (a -> Boolean) -> Array a -> Int
+count' = count'' 0
+  where
+    count'' acc _ [] = acc
+    count'' acc p xs =
+      if p (unsafePartial head xs)
+      then count'' (1 + acc) p (unsafePartial tail xs)
+      else count'' acc p (unsafePartial tail xs)
+
+-- 4. reverse using foldl
+reverse_using_foldl :: forall a. Array a -> Array a
+reverse_using_foldl = foldl (\xs -> \x -> [x] <> xs) []
