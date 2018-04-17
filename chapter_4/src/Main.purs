@@ -103,6 +103,7 @@ If n is prime it means that the array
 will contain only one array with a pair
 -}
 isPrime :: Int -> Boolean
+-- isPrime 1 = false  -- this kind of pattern matching throws an error
 isPrime = factors >>> length >>> ((==) 1)
 -- try this: filter isPrime (1..100) -- Blow away
 
@@ -129,3 +130,10 @@ triples n = do
 -> guard against the product that matches n
 -- Coming up next
 -}
+{-
+use factors then on all the pairs,
+ find factors on each element on the inner array
+ till they are reduced to prime nummers and that should be it.
+ Might even need to consider kust [1,n]
+-}
+-- Will come back to that later with more maths knowledge
