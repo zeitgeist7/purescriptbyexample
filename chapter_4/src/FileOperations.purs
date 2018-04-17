@@ -56,3 +56,19 @@ whereIs fileToSearch = head $ do
 -- Had some trouble with this one.
 -- Credit:
 -- https://github.com/kvsm/purescript-by-example/blob/master/chapter4/src/FileOperations.purs
+
+
+-- To understand how array comprehensions work:
+matrix = do
+  i <- [1,2,3,4]
+  j <- [4,3,2,1,0]
+  [[i,j]]
+{-
+Outputs:
+[
+  [1,4],[1,3],[1,2],[1,1],[1,0],
+  [2,4],[2,3],[2,2],[2,1],[2,0],
+  [3,4],[3,3],[3,2],[3,1],[3,0],
+  [4,4],[4,3],[4,2],[4,1],[4,0]
+]
+-}
