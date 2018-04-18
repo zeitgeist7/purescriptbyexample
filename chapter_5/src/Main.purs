@@ -1,7 +1,6 @@
 module Main where
 
 import Prelude
-import Data.Maybe
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
@@ -9,13 +8,13 @@ import Control.Monad.Eff.Console (CONSOLE, log)
 -- main = do
 --   log "Hello sailor!"
 
-gcd :: Int -> Int -> Int
-gcd 0 n = n
-gcd m 0 = m
-gcd n m =
+gcd' :: Int -> Int -> Int
+gcd' 0 n = n
+gcd' m 0 = m
+gcd' n m =
   if n > m
-    then gcd (n - m) m
-    else gcd n (m - n)
+    then gcd' (n - m) m
+    else gcd' n (m - n)
 
 {-
   Credit: https://matheducators.stackexchange.com/questions/12103/greatest-common-divisor-applications
@@ -76,7 +75,7 @@ isEmpty _ = true
 showPerson :: { first :: String, last :: String } -> String
 showPerson { first: firstName, last: lastName } = firstName <> ", " <> lastName
 
-showPerson' { first: firstName, last: lastName } = firstName <> ", " <> lastName
+-- showPerson' { first: firstName, last: lastName } = firstName <> ", " <> lastName
 
 -- Nested Patterns
 -- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
@@ -112,7 +111,7 @@ sameCity { address: {city: city1}} { address: {city: city2}} = city1 == city2
 
 fromSingleton :: forall a. a -> Array a -> a
 fromSingleton _ [x] = x
-fromSingleton defaultValue _ = defaultValue
+fromSingleton default _ = default
 
 
 
