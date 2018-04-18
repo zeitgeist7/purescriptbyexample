@@ -1,6 +1,7 @@
 module Main where
 
 import Prelude
+import Data.Maybe
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
@@ -60,3 +61,58 @@ fact n = n * fact (n-1)
 
 -- 2.
 -- Will come back to that later
+
+
+-- Array Patterns
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+
+isEmpty :: forall a. Array a -> Boolean
+isEmpty [] = false
+isEmpty _ = true
+
+-- Record Patterns and Row Polymorphism
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+
+showPerson :: { first :: String, last :: String } -> String
+showPerson { first: firstName, last: lastName } = firstName <> ", " <> lastName
+
+showPerson' { first: firstName, last: lastName } = firstName <> ", " <> lastName
+
+-- Nested Patterns
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+type Address = { street :: String, city :: String, country :: String }
+type Person = { first:: String, last :: String, address :: Address }
+
+livesInMauritius :: Person -> Boolean
+-- livesInMauritius { first: _, last: _, location: {street: _, city: _, country: "Mauritius" } } = true
+livesInMauritius { address: { country: "Mauritius" } } = true -- Short and sweet form
+livesInMauritius _ = false
+
+-- Named Patterns
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+sortPair :: Array Int -> Array Int
+sortPair arr@[x,y]
+  | x <= y = arr
+  | otherwise = [y,x]
+sortPair arr = arr
+-- This one packs a punch, need more examples for the idea to gel
+
+-- Exercises
+-- ˆˆˆˆˆˆˆˆˆ
+--1.
+sameCity :: Person -> Person -> Boolean
+sameCity { address: {city: city1}} { address: {city: city2}} = city1 == city2
+
+-- 2.
+-- Got it by commenting the function definition and doing :t sameCity, this is cheating
+-- forall t22 t25 t28 t31 t33. Eq t33 =>
+--       { address :: { city :: t33 | t25 } | t22 }
+--   ->  { address :: { city :: t33 | t31 } | t28 }
+--   ->  Boolean
+
+fromSingleton :: forall a. a -> Array a -> a
+fromSingleton _ [x] = x
+fromSingleton defaultValue _ = defaultValue
+
+
+
