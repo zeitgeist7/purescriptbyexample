@@ -4,12 +4,12 @@ import Prelude
 
 -- import Control.Monad.Eff (Eff)
 -- import Control.Monad.Eff.Console (CONSOLE, log)
-
+import Data.Maybe
 import Data.Foldable(sum)
 import Data.Array.Partial (tail)
 import Partial.Unsafe (unsafePartial)
 
-import Data.Picture (Point(Point), Shape(Circle))-- (Point(..), Shape(..), Picture, bounds, showBounds)
+import Data.Picture (Point(Point), Shape(Circle, Rectangle, Text, Line), showShape, showPoint)-- (Point(..), Shape(..), Picture, bounds, showBounds)
 
 -- main :: forall e. Eff (console :: CONSOLE | e) Unit
 -- main = do
@@ -129,9 +129,28 @@ lzs xs = case sum xs of
 -- Exercises
 -- ˆˆˆˆˆˆˆˆˆ
 -- 1.
-c1 :: Shape
-c1 = Circle origin 10.0
+origin :: Point
+origin = Point { x, y }
   where
-    origin = Point { x, y }
     x = 0.0
     y = 0.0
+
+c1 :: Shape
+c1 = Circle origin 10.0
+
+-- 2.
+doubleSizeAndCenterOrigin :: Shape -> Shape
+doubleSizeAndCenterOrigin (Text _ txt) = Text origin txt
+doubleSizeAndCenterOrigin (Circle _ r) = Circle origin (2.0 * r)
+doubleSizeAndCenterOrigin (Rectangle _ w h) = Rectangle origin (w*2.0) (h*2.0)
+doubleSizeAndCenterOrigin (Line (Point start) (Point end)) =
+  Line newStartPoint newEndPoint
+    where
+      δx = end.x - start.x
+      δy = end.y - start.y
+      newStartPoint = Point { x: -δx, y: -δy }
+      newEndPoint = Point { x: δx, y: δy }
+
+extractText :: Shape -> Maybe String
+extractText (Text _ txt) = Just txt
+extractText _ = Nothing
