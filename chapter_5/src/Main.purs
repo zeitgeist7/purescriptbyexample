@@ -1,8 +1,15 @@
 module Main where
 
 import Prelude
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+
+-- import Control.Monad.Eff (Eff)
+-- import Control.Monad.Eff.Console (CONSOLE, log)
+
+import Data.Foldable(sum)
+import Data.Array.Partial (tail)
+import Partial.Unsafe (unsafePartial)
+
+import Data.Picture (Point(Point), Shape(Circle))-- (Point(..), Shape(..), Picture, bounds, showBounds)
 
 -- main :: forall e. Eff (console :: CONSOLE | e) Unit
 -- main = do
@@ -113,5 +120,18 @@ fromSingleton :: forall a. a -> Array a -> a
 fromSingleton _ [x] = x
 fromSingleton default _ = default
 
+-- Case expressions
+lzs :: Array Int -> Array Int
+lzs xs = case sum xs of
+  0 -> xs
+  _ -> lzs (unsafePartial tail xs)
 
-
+-- Exercises
+-- ˆˆˆˆˆˆˆˆˆ
+-- 1.
+c1 :: Shape
+c1 = Circle origin 10.0
+  where
+    origin = Point { x, y }
+    x = 0.0
+    y = 0.0
