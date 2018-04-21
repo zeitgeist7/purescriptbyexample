@@ -4,12 +4,14 @@ import Prelude
 
 -- import Control.Monad.Eff (Eff)
 -- import Control.Monad.Eff.Console (CONSOLE, log)
+import Math
 import Data.Maybe
 import Data.Foldable(sum)
 import Data.Array.Partial (tail)
 import Partial.Unsafe (unsafePartial)
 
-import Data.Picture (Point(Point), Shape(Circle, Rectangle, Text, Line), showShape, showPoint)-- (Point(..), Shape(..), Picture, bounds, showBounds)
+import Data.Picture (Point(Point), Shape(Circle, Rectangle, Text, Line, Clipped), showShape, showPoint)
+  -- Could have imported this also: (Point(..), Shape(..), Picture, bounds, showBounds)
 
 -- main :: forall e. Eff (console :: CONSOLE | e) Unit
 -- main = do
@@ -143,6 +145,7 @@ doubleSizeAndCenterOrigin :: Shape -> Shape
 doubleSizeAndCenterOrigin (Text _ txt) = Text origin txt
 doubleSizeAndCenterOrigin (Circle _ r) = Circle origin (2.0 * r)
 doubleSizeAndCenterOrigin (Rectangle _ w h) = Rectangle origin (w*2.0) (h*2.0)
+doubleSizeAndCenterOrigin (Clipped p s) = Clipped p (doubleSizeAndCenterOrigin s)
 doubleSizeAndCenterOrigin (Line (Point start) (Point end)) =
   Line newStartPoint newEndPoint
     where
@@ -151,6 +154,26 @@ doubleSizeAndCenterOrigin (Line (Point start) (Point end)) =
       newStartPoint = Point { x: -δx, y: -δy }
       newEndPoint = Point { x: δx, y: δy }
 
+-- 3.
 extractText :: Shape -> Maybe String
 extractText (Text _ txt) = Just txt
 extractText _ = Nothing
+
+-- Exercises
+-- ˆˆˆˆˆˆˆˆˆ
+-- 1.
+area :: Shape -> Number
+area (Line _ _) = 0.0
+area (Text _ _) = 0.0
+area (Circle _ r) = pi * r * r
+area (Rectangle _ w h) = w * h
+area (Clipped p s) = area s
+
+-- Test data
+picture1 = [
+  Line origin (Point {x: 1.0, y: 2.0}),
+  Text (Point {x: 100.0, y: 100.0}) "Bonzy Paro Gamegame Boule et Ti-Ozoz",
+  Circle (Point {x: -200.0, y: -25.0}) 30.0
+]
+
+clipped = Clipped picture1 (Rectangle origin 25.0 25.0)
