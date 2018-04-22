@@ -4,7 +4,7 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
-import Data.Picture
+import Data.Picture (Point(..), Shape(..), Picture)
 
 -- main :: forall e. Eff (console :: CONSOLE | e) Unit
 -- main = do
@@ -43,13 +43,44 @@ origin = Point { x, y }
     x = 0.0
     y = 0.0
 
-c1 :: Shape
-c1 = Circle origin 10.0
+cricle1 :: Shape
+cricle1 = Circle origin 10.0
 
 picture1 = [
   Line origin (Point {x: 1.0, y: 2.0}),
   Text (Point {x: 100.0, y: 100.0}) "Bonzy Paro Gamegame Boule et Ti-Ozoz",
   Circle (Point {x: -200.0, y: -25.0}) 30.0
-]
+] :: Picture
 
-clipped = Clipped picture1 (Rectangle origin 25.0 25.0)
+clipped = Clipped picture1 (Rectangle origin 25.0 25.0) :: Shape
+
+-- Fields
+{-
+Field type identifies those types which support numeric operations such
+addtion, subtraction, multiplication and division
+-}
+
+-- Exercises
+-- 1.
+data Complex = Complex
+  { real :: Number
+  , imaginary :: Number
+  }
+
+instance showComplex :: Show Complex where
+  show (Complex { real, imaginary }) = show real <> stringifyImaginary imaginary <> "i"
+    where
+      stringifyImaginary :: Number -> String
+      stringifyImaginary i =
+        if i < 0.0
+        then " - " <> show (negate i)
+        else " + " <> show i
+  -- show (Complex { real: r, imaginary: i }) = show r <> " + " <> show r <> "i"
+
+{-}
+instance showPoint :: Show Point where
+  show (Point { x, y }) = "(" <> show x <> ", " <> show y <> ")"
+    -}
+
+c1 = Complex { real: 2.0, imaginary: 1.0}
+c2 = Complex { real:  negate 2.0, imaginary: negate 1.0}
