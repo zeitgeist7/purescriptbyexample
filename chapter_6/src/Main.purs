@@ -75,12 +75,14 @@ instance showComplex :: Show Complex where
         if i < 0.0
         then " - " <> show (negate i)
         else " + " <> show i
-  -- show (Complex { real: r, imaginary: i }) = show r <> " + " <> show r <> "i"
+
+instance equalComplex :: Eq Complex where
+  eq (Complex c1) (Complex c2) = c1.real == c2.real && c1.imaginary == c2.imaginary
 
 {-}
 instance showPoint :: Show Point where
   show (Point { x, y }) = "(" <> show x <> ", " <> show y <> ")"
     -}
 
-c1 = Complex { real: 2.0, imaginary: 1.0}
-c2 = Complex { real:  negate 2.0, imaginary: negate 1.0}
+c1 = Complex { real: 2.0, imaginary: 1.0 } :: Complex
+c2 = Complex { real:  negate 2.0, imaginary: negate 1.0 } :: Complex
