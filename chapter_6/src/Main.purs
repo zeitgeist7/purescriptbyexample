@@ -5,6 +5,9 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
 import Data.Picture (Point(..), Shape(..), Picture)
+import Data.Monoid
+import Data.Foldable
+import Data.Array((:))
 
 -- main :: forall e. Eff (console :: CONSOLE | e) Unit
 -- main = do
@@ -145,3 +148,9 @@ instance orderingExtended :: (Ord a) => Ord (NonEmpty a) where
     | x < y = LT
     | x > y = GT
     | otherwise = compare xs ys
+
+-- 5.
+instance foldNonEmpty :: Foldable NonEmpty where
+  foldr f y (NonEmpty x xs) = foldr f y (x:xs)  -- Do not know of (:) is less performant
+  foldl f y (NonEmpty x xs) = foldl f y (x:xs)
+  foldMap f (NonEmpty x xs) = foldMap f (x:xs)
