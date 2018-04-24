@@ -134,4 +134,14 @@ instance semiGroupNonEmpty :: (Semigroup a) => Semigroup (NonEmpty a) where
 
 -- 3.
 instance functorNonEmpty :: Functor NonEmpty where
-  map f (NonEmpty x xs) = NonEmpty (f x) (map f xs)
+  map f (NonEmpty x xs) = NonEmpty (f x) (map f xs) -- <$>
+
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+data Extended a = Finite a | Infinite
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+-- 4.
+instance orderingExtended :: (Ord a) => Ord (NonEmpty a) where
+  compare (NonEmpty x (xs)) (NonEmpty y (ys))
+    | x < y = LT
+    | x > y = GT
+    | otherwise = compare xs ys
