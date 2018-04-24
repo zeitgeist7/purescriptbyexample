@@ -79,10 +79,22 @@ instance showComplex :: Show Complex where
 instance equalComplex :: Eq Complex where
   eq (Complex c1) (Complex c2) = c1.real == c2.real && c1.imaginary == c2.imaginary
 
-{-}
-instance showPoint :: Show Point where
-  show (Point { x, y }) = "(" <> show x <> ", " <> show y <> ")"
-    -}
-
 c1 = Complex { real: 2.0, imaginary: 1.0 } :: Complex
 c2 = Complex { real:  negate 2.0, imaginary: negate 1.0 } :: Complex
+
+-- Notes about showCompare
+-- Tried to implement the same functie using guards, 💂‍
+showCompare :: forall a. Ord a => Show a => a -> a -> String
+showCompare a1 a2
+  | a1 < a2 = show a1 <> " is less than " <> show a2
+  | a1 > a2 = show a1 <> " is greater than " <> show a2
+  | otherwise = show a1 <> " is equal to " <> show a2
+
+-- Exercises
+-- 1.
+data NonEmpty a = NonEmpty a (Array a)
+-- `a` is a type argument, for example here is the type constructor for `Maybe`
+-- data Maybe a = Nothing | Just a
+instance equalNonEmpty :: (Eq a) => Eq (NonEmpty a) where
+  eq (NonEmpty x (xs)) (NonEmpty y (ys)) = (x == y && xs == ys)
+-- Tough this one!
