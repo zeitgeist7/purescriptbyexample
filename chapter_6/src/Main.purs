@@ -91,10 +91,36 @@ showCompare a1 a2
   | otherwise = show a1 <> " is equal to " <> show a2
 
 -- Exercises
--- 1.
+{-
+Test data:
+ˆˆˆˆˆˆˆˆˆˆ
+ne1 = NonEmpty "1" (["1"]) :: NonEmpty String
+ne2 = NonEmpty "2" (["1","2"]) :: NonEmpty String
+ne3 = NonEmpty "3" (["1", "10", "7"]) :: NonEmpty String
+-}
 data NonEmpty a = NonEmpty a (Array a)
--- `a` is a type argument, for example here is the type constructor for `Maybe`
--- data Maybe a = Nothing | Just a
+{-
+`a` is a type argument, for example here is the type constructor for `Maybe`
+data Maybe a = Nothing | Just a
+This is a non empty array since we need to pass at least
+the first element, typed a
+then an array (empty or not), typed Array a
+These are values that are possible:
+> NonEmpty 7 []
+> NonEmpty "Bonzy" []
+> NonEmpty 10 [7, 9, 23]
+> NonEmpty "Bonzy" ["Paro", "Gympy"]
+-}
+-- Bonus
+instance showNonEmpty :: (Show a) => Show (NonEmpty a) where
+  show (NonEmpty x xs) = show ([x] <> xs)
+
+-- 1.
 instance equalNonEmpty :: (Eq a) => Eq (NonEmpty a) where
-  eq (NonEmpty x (xs)) (NonEmpty y (ys)) = (x == y && xs == ys)
+  eq (NonEmpty x xs) (NonEmpty y ys) = (x == y && xs == ys) -- ==
 -- Tough this one!
+
+-- 2.
+-- Int does not form a semigroup
+instance semiGroupNonEmpty :: (Semigroup a) => Semigroup (NonEmpty a) where
+  append (NonEmpty x xs) (NonEmpty y ys) = NonEmpty x (xs <> [y] <> ys) -- <>
