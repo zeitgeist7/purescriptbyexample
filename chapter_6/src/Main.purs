@@ -111,9 +111,16 @@ These are values that are possible:
 > NonEmpty 10 [7, 9, 23]
 > NonEmpty "Bonzy" ["Paro", "Gympy"]
 -}
+-- Some functions to work on NonEmpty Int
+incr :: Int -> Int
+incr n = n + 1
+
+square :: Int -> Int
+square n = n * n
+
 -- Bonus
 instance showNonEmpty :: (Show a) => Show (NonEmpty a) where
-  show (NonEmpty x xs) = show ([x] <> xs)
+  show (NonEmpty x xs) = show x <> " followed by " <> show xs
 
 -- 1.
 instance equalNonEmpty :: (Eq a) => Eq (NonEmpty a) where
@@ -124,3 +131,7 @@ instance equalNonEmpty :: (Eq a) => Eq (NonEmpty a) where
 -- Int does not form a semigroup
 instance semiGroupNonEmpty :: (Semigroup a) => Semigroup (NonEmpty a) where
   append (NonEmpty x xs) (NonEmpty y ys) = NonEmpty x (xs <> [y] <> ys) -- <>
+
+-- 3.
+instance functorNonEmpty :: Functor NonEmpty where
+  map f (NonEmpty x xs) = NonEmpty (f x) (map f xs)
