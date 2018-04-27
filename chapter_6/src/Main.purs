@@ -1,12 +1,11 @@
 module Main where
 
 import Prelude
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+-- import Control.Monad.Eff (Eff)
+-- import Control.Monad.Eff.Console (CONSOLE, log)
 
 import Data.Picture (Point(..), Shape(..), Picture)
-import Data.Monoid
-import Data.Foldable
+import Data.Foldable (class Foldable, foldMap, foldl, foldr)
 import Data.Array((:))
 
 -- main :: forall e. Eff (console :: CONSOLE | e) Unit
@@ -82,8 +81,8 @@ instance showComplex :: Show Complex where
 instance equalComplex :: Eq Complex where
   eq (Complex c1) (Complex c2) = c1.real == c2.real && c1.imaginary == c2.imaginary
 
-c1 = Complex { real: 2.0, imaginary: 1.0 } :: Complex
-c2 = Complex { real:  negate 2.0, imaginary: negate 1.0 } :: Complex
+complex1 = Complex { real: 2.0, imaginary: 1.0 } :: Complex
+complex2 = Complex { real:  negate 2.0, imaginary: negate 1.0 } :: Complex
 
 -- Notes about showCompare
 -- Tried to implement the same functie using guards, 💂‍
@@ -126,13 +125,13 @@ instance showNonEmpty :: (Show a) => Show (NonEmpty a) where
   show (NonEmpty x xs) = show x <> " followed by " <> show xs
 
 -- 1.
-instance equalNonEmpty :: (Eq a) => Eq (NonEmpty a) where
+instance equatableNonEmpty :: (Eq a) => Eq (NonEmpty a) where
   eq (NonEmpty x xs) (NonEmpty y ys) = (x == y && xs == ys) -- ==
 -- Tough this one!
 
 -- 2.
 -- Int does not form a semigroup
-instance semiGroupNonEmpty :: (Semigroup a) => Semigroup (NonEmpty a) where
+instance semiGroupNonEmpty :: Semigroup a => Semigroup (NonEmpty a) where
   append (NonEmpty x xs) (NonEmpty y ys) = NonEmpty x (xs <> [y] <> ys) -- <>
 
 -- 3.
@@ -150,7 +149,13 @@ instance orderingExtended :: (Ord a) => Ord (NonEmpty a) where
     | otherwise = compare xs ys
 
 -- 5.
-instance foldNonEmpty :: Foldable NonEmpty where
-  foldr f y (NonEmpty x xs) = foldr f y (x:xs)  -- Do not know of (:) is less performant
+instance foldableNonEmpty :: Foldable NonEmpty where
+  -- Do not know of (:) is less performant
+  foldr f y (NonEmpty x xs) = foldr f y (x:xs)
   foldl f y (NonEmpty x xs) = foldl f y (x:xs)
   foldMap f (NonEmpty x xs) = foldMap f (x:xs)
+
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+data OneMore f a = OneMore a (f a)
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+-- 6.
