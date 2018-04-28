@@ -159,3 +159,40 @@ instance foldableNonEmpty :: Foldable NonEmpty where
 data OneMore f a = OneMore a (f a)
 -- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
 -- 6.
+-- NOTE: We are pattern matching on (OneMore a c) where
+--   c represents `f a`
+--   f is the foldable ordered container
+instance foldableOneMore :: Foldable f => Foldable (OneMore f) where
+  foldr f' y (OneMore x xs) = f' x (foldr f' y xs)
+  foldl f' y (OneMore x xs) = foldl f' (f' y x) xs
+  foldMap f' (OneMore a xs) = f' a <> (foldMap f' xs)
+{-
+Explanation for each case:
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+foldr :: forall a b. (a -> b -> b) -> b -> f a -> b
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+We need to fold from the right. Since in `OneMore a (f a)`,
+we have an `x` at the front (exercise specs), we can foldr on the (ordered) container, c, (f a), first
+hence: (foldr f' y xs).
+(foldr f' y xs) :: `b` since we used `f'` for the foldr.
+Let partialResult = (foldr f' y xs) :: b
+We are left with an `x`, and the partial result from above (:: `b`).
+We can complete the fold with `f' x partialResult` that will give a reduced value,
+of type `b`. DONE!
+
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+foldl :: forall a b. (b -> a -> b) -> b -> f a -> b
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+We are folding from the left starting with `y` which is of type `b`.
+Then we have a front element `x` which is of type `a`.
+We can use the function `f'` on y and x, f' y x to get an element of type `b`.
+Since we are now left with xs, we can just foldl this ordered container. DONE!
+
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+foldMap :: forall a, m. Monoid m => (a -> m) -> f a -> m
+ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+Same thing, and simpler; we apply `f'` on x and we concat the result
+with the `foldMap` of xs using `f'` since xs is an ordered container (foldable). DONE!
+-}
