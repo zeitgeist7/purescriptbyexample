@@ -5,10 +5,17 @@ import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 
 import Data.Picture (Point(..), Shape(..), Picture)
-import Data.Foldable (class Foldable, foldMap, foldl, foldr)
+import Data.Foldable (class Foldable, foldMap, foldl, foldr, maximum)
+
 import Data.Array((:))
+import Data.Array as Array
+import Data.Array.Partial as Partial
+
 import Data.List (List(..), filter, head, null, nubBy)
+
 import Data.Maybe
+
+import Data.Monoid (class Monoid, mempty)
 
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
@@ -199,3 +206,28 @@ foldMap :: forall a, m. Monoid m => (a -> m) -> f a -> m
 Same thing, and simpler; we apply `f'` on x and we concat the result
 with the `foldMap` of xs using `f'` since xs is an ordered container (foldable). DONE!
 -}
+
+-- Exercises (page 78)
+-- ˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆˆ
+-- 1.
+max' :: Partial => Array Int -> Int
+max' = maximum >>> force_unwrap
+  where
+    force_unwrap :: Partial => Maybe Int -> Int
+    force_unwrap (Just x) = x
+{-
+Explanation
+ˆˆˆˆˆˆˆˆˆˆˆ
+Data.Foldable.maximum returns a Maybe Int,
+therefore it is forward composed with the auxiliary,
+force_unwrap that is itself partial (does not handle the Nothing case).
+To use it in the REPL;
+
+> import Partial.Unsafe
+> unsafePartial max' youArray
+> -- if yourArray is empty it will throw an error
+-}
+
+-- 2.
+class Monoid m <= Activity m a where
+  act :: m -> a -> a
