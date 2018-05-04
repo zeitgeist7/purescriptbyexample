@@ -229,5 +229,38 @@ To use it in the REPL;
 -}
 
 -- 2.
-class Monoid m <= Activity m a where
+class Monoid m <= Action m a where
   act :: m -> a -> a
+
+newtype Multiply = Multiply Int
+
+instance semigroupMultiply :: Semigroup Multiply where
+  append (Multiply n) (Multiply m) = Multiply (n * m)
+
+instance monoidMultiply :: Monoid Multiply where
+  mempty = Multiply 1
+
+-- Need to import Data.Monoid for it to work
+instance repeatAction :: Action Multiply String where
+  act (Multiply n) s = repeat n s
+    where
+      repeat :: Int -> String -> String
+      repeat 1 str = "" <> str
+      repeat n str = str <> repeat (n - 1) str
+
+instance arrayAction :: Action m a => Action m (Array a) where
+  act m = map (act m) -- pointfree style
+{-
+-- Explanation
+-- ˆˆˆˆˆˆˆˆˆˆˆ
+Had difficulty understanding the notation
+`Action m a => Action m (Array a)`
+initially but I kind of get it now (unless roven wrong by the future)
+The way to read `Action m a => Action m (Array a)` is that
+for this instance on `Action m (Array a)` we have a first constraint:
+`Action m a` that says that `a` is also 'actionable'. That means that
+we have an `act` functie :: m -> a -> a.
+The rest is simple since the question asks to transform each element inside the array,
+we just have to map on the array. The function that we pass to map is the
+`act` of `a` that we partially apply with some monoid `m`. Boom!
+-}

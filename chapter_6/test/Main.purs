@@ -6,6 +6,8 @@ import Control.Monad.Eff.Console (CONSOLE, log)
 import Data.Maybe (Maybe(..))
 import Data.List (List(..), (:))
 import Stream (foldstream)
+import Main-- (Multiply, act)
+import Data.Monoid(mempty)
 
 -- Stream tests
 assert :: forall a. Eq a => String -> a -> a -> String
@@ -73,6 +75,7 @@ maybe_string_to_list_monoid :: Maybe String -> List String
 maybe_string_to_list_monoid Nothing = Nil
 maybe_string_to_list_monoid (Just str) = str : Nil
 
+emptyMultiply = mempty :: Multiply
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
@@ -95,3 +98,11 @@ main = do
   -- stream3 = ["Bonzy", "Paro", "Gympy"]
   log $ assert "folding Array String with `String -> String"
     (foldstream string_to_string_monoid stream3) "Bonzy-monoid, Paro-monoid, Gympy-monoid, "
+  -- Exerccise tests about Multiply, Activity, etc (page 78)
+  log $ assert "First law: `act mempty a = a`"
+    (act (mempty :: Multiply) "Bonzy ") "Bonzy "
+    -- Had to type annotate mempty for the compiler to be happy
+    -- The book covers this on page 75
+  log $ assert "Second law: act (m1 <> m2) a = act m1 (act m2 a)"
+    (act ((Multiply 2) <> (Multiply 3)) "Paro ")
+    (act (Multiply 2) (act (Multiply 3) "Paro "))
