@@ -17,6 +17,7 @@ import Data.Maybe
 
 import Data.Monoid (class Monoid, mempty)
 
+import Data.Hashable
 
 main :: forall e. Eff (console :: CONSOLE | e) Unit
 main = do
