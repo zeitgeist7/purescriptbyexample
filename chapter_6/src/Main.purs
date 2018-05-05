@@ -248,6 +248,7 @@ instance repeatAction :: Action Multiply String where
       repeat 1 str = "" <> str
       repeat n str = str <> repeat (n - 1) str
 
+-- 3.
 instance arrayAction :: Action m a => Action m (Array a) where
   act m = map (act m) -- pointfree style
 {-
@@ -263,4 +264,23 @@ we have an `act` functie :: m -> a -> a.
 The rest is simple since the question asks to transform each element inside the array,
 we just have to map on the array. The function that we pass to map is the
 `act` of `a` that we partially apply with some monoid `m`. Boom!
+-}
+
+-- 4.
+newtype Self m = Self m
+
+instance selfAction :: Monoid m => Action m (Self m) where
+  act _ (Self m) = Self (m <> m)
+{-
+Discarding the first input since the question says that
+the monoid m should act on itself
+
+`Monoid m => Action m (Self m)` means that,
+`m` is a monoid such that there is an action instance
+for the type`Self m` which uses `m` in its data constructor.
+-- Try this in the REPL:
+> self = Self (Multiply 3)
+> m = Multiply 100
+> act m self  -- Self (Multiply 9)
+
 -}
