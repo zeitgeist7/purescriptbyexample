@@ -6,6 +6,8 @@ module Data.Hashable
   , hashEqual
   , combineHashes
   , hasDuplicate
+  , Hour
+  , hour
   ) where
 
 import Prelude
@@ -68,7 +70,21 @@ instance hashEither :: (Hashable a, Hashable b) => Hashable (Either a b) where
 
 -- Exercises
 -- ˆˆˆˆˆˆˆˆˆ
-
 -- 2.
 hasDuplicate :: forall a. Hashable a => Array a -> Boolean
 hasDuplicate xs = ((nubBy hashEqual) >>> (/=)) xs xs
+
+-- 3.
+newtype Hour = Hour Int
+
+hour :: Int -> Hour
+hour h = Hour h
+
+instance showHour :: Show Hour where
+  show (Hour h) = show $ mod h 12
+
+instance eqHour :: Eq Hour where
+  eq (Hour m) (Hour n) = mod n 12 == mod m 12
+
+instance hashHour :: Hashable Hour where
+  hash (Hour h) = hash (mod h 12)
